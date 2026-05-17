@@ -40,7 +40,12 @@ jobs:
       # Get latest run_id
       - name: Get latest run_id
         run: |
-          RUN_ID=$(find MLProject/mlruns/0 -mindepth 1 -maxdepth 1 -type d | sort | tail -1 | xargs basename)
+          RUN_ID=$(find MLProject/mlruns/0 -mindepth 1 -maxdepth 1 -type d 2>/dev/null | sort | tail -1 | xargs -r basename)
+          
+          if [ -z "$RUN_ID" ]; then
+            echo "Error: No MLflow runs found"
+            exit 1
+          fi
 
           echo "RUN_ID=$RUN_ID" >> $GITHUB_ENV
           echo "Latest RUN_ID: $RUN_ID"
