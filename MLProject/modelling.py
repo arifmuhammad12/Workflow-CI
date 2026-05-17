@@ -14,11 +14,6 @@ from sklearn.metrics import (
   classification_report
 )
 
-# Set tracking URI
-mlflow.set_tracking_uri(
-  "http://127.0.0.1:5000/"
-)
-
 # Set experiment
 mlflow.set_experiment(
   "telco-customer-churn"
@@ -110,4 +105,9 @@ with mlflow.start_run(
   joblib.dump(
     model,
     "random_forest_model.pkl"
+  )
+
+  mlflow.sklearn.log_model(
+    model,
+    "model"
   )
