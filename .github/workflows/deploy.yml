@@ -51,7 +51,7 @@ jobs:
           cd MLProject
 
           mlflow models build-docker \
-          -m "mlruns/0/${{ env.RUN_ID }}/artifacts/model" \
+          -m "mlruns/0/$RUN_ID/artifacts/model" \
           -n model-training
 
       # Login Docker Hub
