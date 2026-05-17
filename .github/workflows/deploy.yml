@@ -38,15 +38,9 @@ jobs:
           ls -R MLProject/mlruns
 
       # Get latest run_id
-      - name: Get latest run_id
+      - name: Get latest MLflow run_id
         run: |
-          RUN_ID=$(find MLProject/mlruns/0 -mindepth 1 -maxdepth 1 -type d 2>/dev/null | sort | tail -1 | xargs -r basename)
-          
-          if [ -z "$RUN_ID" ]; then
-            echo "Error: No MLflow runs found"
-            exit 1
-          fi
-
+          RUN_ID=$(find MLProject/mlruns -name meta.yaml -exec grep "^run_id:" {} \; | head -n1 | awk '{print $2}')
           echo "RUN_ID=$RUN_ID" >> $GITHUB_ENV
           echo "Latest RUN_ID: $RUN_ID"
 
