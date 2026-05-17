@@ -32,19 +32,26 @@ jobs:
           cd MLProject
           mlflow run . --env-manager=local
 
-      # Get latest MLflow run_id
+      # Debug (sementara)
+      - name: Show MLflow structure
+        run: |
+          ls -R MLProject/mlruns
+
+      # Get latest run_id
       - name: Get latest run_id
         run: |
-          RUN_ID=$(ls -td MLProject/mlruns/0/*/ | head -n 1 | cut -d'/' -f4)
+          RUN_ID=$(find MLProject/mlruns/0 -mindepth 1 -maxdepth 1 -type d | sort | tail -1 | xargs basename)
+
           echo "RUN_ID=$RUN_ID" >> $GITHUB_ENV
           echo "Latest RUN_ID: $RUN_ID"
 
-      # Build Docker image using MLflow
+      # Build Docker image
       - name: Build Docker Model
         run: |
           cd MLProject
+
           mlflow models build-docker \
-          -m mlruns/0/${{ env.RUN_ID }}/artifacts/model \
+          -m "mlruns/0/${{ env.RUN_ID }}/artifacts/model" \
           -n model-training
 
       # Login Docker Hub
@@ -54,13 +61,13 @@ jobs:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
-      # Tag Docker image
+      # Tag image
       - name: Tag Docker Image
         run: |
           docker tag model-training \
           ${{ secrets.DOCKER_USERNAME }}/model-training:latest
 
-      # Push Docker image
+      # Push image
       - name: Push Docker Image
         run: |
           docker push \
