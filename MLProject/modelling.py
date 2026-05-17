@@ -42,72 +42,69 @@ X_train, X_test, y_train, y_test = train_test_split(
   stratify=y
 )
 
-# Start MLflow run
-with mlflow.start_run(
-  run_name="RandomForestClassifier"
-):
+
 
   # Random Forest anti overfitting
-  model = RandomForestClassifier(
-    n_estimators=100,
-    max_depth=5,
-    min_samples_split=5,
-    min_samples_leaf=2,
-    class_weight="balanced",
-    random_state=42
-  )
+model = RandomForestClassifier(
+  n_estimators=100,
+  max_depth=5,
+  min_samples_split=5,
+  min_samples_leaf=2,
+  class_weight="balanced",
+  random_state=42
+)
 
   # Training
-  model.fit(
-    X_train,
-    y_train
-  )
+model.fit(
+  X_train,
+  y_train
+)
 
   # Prediction
-  y_pred = model.predict(X_test)
+y_pred = model.predict(X_test)
 
   # Evaluation
-  accuracy = accuracy_score(
-    y_test,
-    y_pred
-  )
+accuracy = accuracy_score(
+  y_test,
+  y_pred
+)
 
-  precision = precision_score(
-    y_test,
-    y_pred
-  )
+precision = precision_score(
+  y_test,
+  y_pred
+)
 
-  recall = recall_score(
-    y_test,
-    y_pred
-  )
+recall = recall_score(
+  y_test,
+  y_pred
+)
 
-  f1 = f1_score(
-    y_test,
-    y_pred
-  )
+f1 = f1_score(
+  y_test,
+  y_pred
+)
 
   # Print metric test
-  print(f"Accuracy : {accuracy}")
-  print(f"Precision: {precision}")
-  print(f"Recall   : {recall}")
-  print(f"F1 Score : {f1}")
+print(f"Accuracy : {accuracy}")
+print(f"Precision: {precision}")
+print(f"Recall   : {recall}")
+print(f"F1 Score : {f1}")
 
-  print("\nClassification Report:\n")
-  print(
-    classification_report(
-      y_test,
-      y_pred
-    )
+print("\nClassification Report:\n")
+print(
+  classification_report(
+    y_test,
+    y_pred
   )
+)
 
   # Save model
-  joblib.dump(
-    model,
-    "random_forest_model.pkl"
-  )
+joblib.dump(
+  model,
+  "random_forest_model.pkl"
+)
 
-  mlflow.sklearn.log_model(
-    model,
-    "model"
-  )
+mlflow.sklearn.log_model(
+  model,
+  "model"
+)
